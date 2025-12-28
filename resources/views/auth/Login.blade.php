@@ -1,82 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Restaurant</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background: #111; }
-        .auth-wrapper { min-height: 100vh; }
-        .auth-image {
-            background: url('/images/restaurant.jpg') center/cover no-repeat;
-        }
-        .auth-card {
-            max-width: 420px;
-            width: 100%;
-        }
-        .btn-primary {
-            background-color: #a4161a;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #861015;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
+
 <body>
+    <div class="login-container">
+        <div class="image-side">
+        </div>
 
-<div class="container-fluid auth-wrapper">
-    <div class="row h-100">
-        <!-- IMAGE -->
-        <div class="col-md-6 d-none d-md-block auth-image"></div>
+        <div class="form-side">
+            <div class="form-content-wrapper">
+                <h1 class="welcome-text">Welcome!</h1>
+                <p class="login-info">Please log in to your account to continue</p>
 
-        <!-- FORM -->
-        <div class="col-md-6 d-flex align-items-center justify-content-center bg-white">
-            <div class="auth-card p-4">
-                <h2 class="fw-bold text-danger">Welcome!</h2>
-                <p class="text-muted">Please login to your account to continue</p>
-
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-
+                <form>
                     <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control p-3" id="email" placeholder="Enter your email..">
                     </div>
 
                     <div class="mb-3">
                         <div class="d-flex justify-content-between">
-                            <label>Password</label>
-                            <a href="{{ route('password.request') }}" class="small">Forgot Password?</a>
+                            <label for="password" class="form-label">Password</label>
+                            <a href="#" class="forgot-password">*Forgot Password?</a>
                         </div>
-                        <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                        <input type="password" class="form-control p-3" id="password"
+                            placeholder="Enter your password..">
                     </div>
 
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" required>
-                        <label class="form-check-label">I agree to the Terms & Privacy</label>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="terms">
+                        <label class="form-check-label" for="terms">I agree to the Terms & Privacy</label>
                     </div>
 
-                    <button class="btn btn-primary w-100 mb-3">Log In</button>
-
-                    <p class="text-center small">
-                        Don't have an account?
-                        <a href="{{ route('register') }}">Sign Up</a>
-                    </p>
-
-                    <hr>
-
-                    <button type="button" class="btn btn-outline-secondary w-100 mb-2">
-                        Login with Google
-                    </button>
-                    <button type="button" class="btn btn-outline-primary w-100">
-                        Login with Facebook
-                    </button>
+                    <button type="submit" class="btn btn-login w-100">Log In</button>
                 </form>
+
+                <div class="text-center mt-3">
+                    Don't have any account? <a href="#">Sign Up</a>
+                </div>
+
+                <div class="social-login-separator">Or</div>
+
+                <div class="d-flex social-buttons">
+                    <button class="btn btn-google d-flex align-items-center justify-content-center flex-grow-1">
+                        <i class="fab fa-google me-2"></i> Login with Google
+                    </button>
+
+                    <button class="btn btn-facebook d-flex align-items-center justify-content-center flex-grow-1">
+                        <i class="fab fa-facebook-f me-2"></i> Login with Facebook
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
