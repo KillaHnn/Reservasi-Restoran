@@ -16,14 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('table_id')->constrained('tables');
             $table->date('reservation_date');
-            $table->string('phone_number');
             $table->time('start_time');
             $table->time('end_time');
             $table->integer('guest_count');
             $table->enum('status', ['pending', 'confirmed', 'canceled', 'completed'])->default('pending');
-            $table->enum('payment_status', ['unpaid', 'paid'])->default('unpaid');
             $table->text('special_note')->nullable();
-            $table->timestamp('checked_in_at')->nullable();
             $table->timestamps();
         });
     }
