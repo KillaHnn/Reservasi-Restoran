@@ -50,7 +50,6 @@
                 </form>"
 
                 <div class="text-center mt-3">
-                    
                     Don't have any account? <a href="{{ route('register') }}">Sign Up</a>
                 </div>
 
