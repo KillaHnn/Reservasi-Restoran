@@ -45,7 +45,7 @@
                 </form>
 
                 <div class="text-center mt-3">
-                    Don't have any account? <a href="#">Sign Up</a>
+                    Don't have any account? <a href="{{ route('register') }}">Sign Up</a>
                 </div>
 
                 <div class="social-login-separator">Or</div>

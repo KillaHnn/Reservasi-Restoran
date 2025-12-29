@@ -9,6 +9,10 @@ Route::get('/', function () {
     return view('landing.index');
 });
 
+Route::get('/login', function () {return view('auth.login'); })->name('login');
+Route::get('/register', function () {return view('auth.register'); })->name('register');
+
+
 // Routes forgot password
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
 ->middleware('guest')
