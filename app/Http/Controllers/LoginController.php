@@ -19,10 +19,12 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        if (!Auth::attempt($credentials)) {
+        $remember = $request->filled('remember');
+
+        if (! Auth::attempt($credentials, $remember)) {
             return back()->withErrors([
                 'email' => 'Email atau password salah'
-            ]);
+            ])->withInput($request->only('email'));
         }
 
         $request->session()->regenerate();

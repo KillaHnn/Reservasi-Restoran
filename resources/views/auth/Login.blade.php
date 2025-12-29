@@ -21,28 +21,33 @@
                 <h1 class="welcome-text">Welcome!</h1>
                 <p class="login-info">Please log in to your account to continue</p>
 
-                <form>
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger">{{ $errors->first() }}</div>
+                    @endif
+
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control p-3" id="email" placeholder="Enter your email..">
+                        <input type="email" name="email" class="form-control p-3" id="email" placeholder="Enter your email.." value="{{ old('email') }}" required>
                     </div>
 
                     <div class="mb-3">
                         <div class="d-flex justify-content-between">
                             <label for="password" class="form-label">Password</label>
-                            <a href="#" class="forgot-password">*Forgot Password?</a>
+                            <a href="{{ route('password.request') }}" class="forgot-password">*Forgot Password?</a>
                         </div>
-                        <input type="password" class="form-control p-3" id="password"
-                            placeholder="Enter your password..">
+                        <input type="password" name="password" class="form-control p-3" id="password" placeholder="Enter your password.." required>
                     </div>
 
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="terms">
-                        <label class="form-check-label" for="terms">I agree to the Terms & Privacy</label>
+                        <input type="checkbox" name="remember" class="form-check-input" id="terms">
+                        <label class="form-check-label" for="terms">Remember me</label>
                     </div>
 
                     <button type="submit" class="btn btn-login w-100">Log In</button>
-                </form>
+                </form>"
 
                 <div class="text-center mt-3">
                     Don't have any account? <a href="{{ route('register') }}">Sign Up</a>
