@@ -21,9 +21,18 @@
 
                 <form>
                     <div class="mb-3">
-                        <label for="name" class="reg-label">Full Name</label>
-                        <input type="text" class="form-control p-3 reg-input" id="name"
-                            placeholder="Enter your full name..">
+                        <label>Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Your full name" value="{{ old('name') }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Phone number</label>
+                        <input type="text" name="phone_number" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('phone_number') }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Enter your email" value="{{ old('email') }}" required>
                     </div>
 
                     <div class="mb-3">
@@ -43,7 +52,21 @@
                         <label class="form-check-label" for="terms">I agree to the Terms & Privacy</label>
                     </div>
 
-                    <button type="submit" class="btn btn-reg-submit w-100">Sign Up</button>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Register</button>
+
+                    <p class="text-center small">
+                        Have an account?
+                        <a href="{{ route('login') }}">Log In</a>
+                    </p>
+
+                    <hr>
+
+                    <button type="button" class="btn btn-outline-secondary w-100 mb-2">
+                        Login with Google
+                    </button>
+                    <button type="button" class="btn btn-outline-primary w-100">
+                        Login with Facebook
+                    </button>
                 </form>
 
                 <div class="text-center mt-3">
