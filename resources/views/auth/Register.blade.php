@@ -40,8 +40,18 @@
                     @csrf
 
                     <div class="mb-3">
+                        <label>Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Your full name" value="{{ old('name') }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Phone number</label>
+                        <input type="text" name="phone_number" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('phone_number') }}" required>
+                    </div>
+
+                    <div class="mb-3">
                         <label>Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                        <input type="email" name="email" class="form-control" placeholder="Enter your email" value="{{ old('email') }}" required>
                     </div>
 
                     <div class="mb-3">
@@ -59,7 +69,7 @@
                         <label class="form-check-label">I agree to the Terms & Privacy</label>
                     </div>
 
-                    <button class="btn btn-primary w-100 mb-3">Register</button>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Register</button>
 
                     <p class="text-center small">
                         Have an account?

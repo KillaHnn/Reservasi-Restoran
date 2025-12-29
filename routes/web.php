@@ -6,7 +6,7 @@ use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('landing.index');
+    return view('customer_dashboard');
 });
 
 // Routes forgot password
@@ -58,6 +58,6 @@ Route::middleware(['auth', 'role:cashier'])
 Route::middleware(['auth', 'role:customer'])
     ->prefix('customer')
     ->group(function () {
-        Route::get('/dashboard', fn () => view('customer.dashboard'))
+        Route::get('/dashboard', fn () => view('customer_dashboard'))
             ->name('customer.dashboard');
     });
