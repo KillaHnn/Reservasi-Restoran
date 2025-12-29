@@ -28,8 +28,25 @@
             </nav>
 
             <div class="auth-buttons">
-                <a href="/login" class="btn-signin">Sign In</a>
-                <a href="/register" class="btn-signup">Sign Up</a>
+                @guest
+                    <a href="{{ route('login') }}" class="btn-signin">Sign In</a>
+                    <a href="{{ route('register') }}" class="btn-signup">Sign Up</a>
+                @endguest
+
+                @auth
+                    @if (Auth::user()->role == 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="btn-signin">Go to Admin Panel</a>
+                    @elseif(Auth::user()->role == 'cashier')
+                        <a href="{{ route('cashier.dashboard') }}" class="btn-signin">Go to Cashier Panel</a>
+                    @else
+                        <a href="{{ route('customer.dashboard') }}" class="btn-signin">My Dashboard</a>
+                    @endif
+
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn-signup" style="border: none;">Logout</button>
+                    </form>
+                @endauth
             </div>
         </header>
 

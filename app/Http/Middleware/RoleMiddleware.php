@@ -4,29 +4,16 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     * Usage in routes: ->middleware(['auth', 'role:admin|cashier'])
-     */
-    public function handle(Request $request, Closure $next, ?string $roles = null)
+    public function handle(Request $request, Closure $next, $role): HttpFoundationResponse
     {
-        $user = $request->user();
-
-        // If there's no authenticated user, let 'auth' middleware handle it when used together.
-        if (! $user) {
-            abort(403);
+        if (Auth::check() && Auth::user()->role === $role) {
+            return $next($request);
         }
-
-        if ($roles) {
-            $allowed = explode('|', $roles);
-            if (! in_array($user->role, $allowed, true)) {
-                abort(403);
-            }
-        }
-
-        return $next($request);
+        return redirect('/')->with('error', 'You do not have access to this page.');
     }
 }
