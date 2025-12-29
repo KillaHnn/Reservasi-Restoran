@@ -6,7 +6,7 @@ use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('customer_dashboard');
+    return view('landing.index');
 });
 
 Route::get('/login', function () {return view('auth.login'); })->name('login');
@@ -62,6 +62,6 @@ Route::middleware(['auth', 'role:cashier'])
 Route::middleware(['auth', 'role:customer'])
     ->prefix('customer')
     ->group(function () {
-        Route::get('/dashboard', fn () => view('customer_dashboard'))
+        Route::get('/dashboard', fn () => view('customer.dashboard'))
             ->name('customer.dashboard');
     });
