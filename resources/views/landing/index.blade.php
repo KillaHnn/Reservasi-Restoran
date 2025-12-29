@@ -18,7 +18,7 @@
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
 
-        <header class="custom-header">
+        <header class="custom-header d-flex align-items-center px-4 py-3">
             <nav class="navbar-custom">
                 <a class="nav-link-custom active" href="#home">Home</a>
                 <a class="nav-link-custom" href="#about">About Us</a>
@@ -27,7 +27,12 @@
                 <a class="nav-link-custom" href="#contact">Contact</a>
             </nav>
 
+            <div class="auth-buttons">
+                <a href="/login" class="btn-signin">Sign In</a>
+                <a href="/register" class="btn-signup">Sign Up</a>
+            </div>
         </header>
+
 
         <div class="hero-content">
             <h1 class="hero-title">
