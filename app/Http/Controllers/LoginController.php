@@ -30,7 +30,6 @@ class LoginController extends Controller
         $request->session()->regenerate();
         $user = Auth::user();
 
-        // 🔀 Redirect berdasarkan role
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
@@ -45,9 +44,10 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/')->with('success', 'You have been logged out successfully.');
     }
 }

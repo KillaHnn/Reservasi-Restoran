@@ -19,54 +19,39 @@
                 <h1 class="reg-title">Join Us!</h1>
                 <p class="reg-subtitle text-center">Create your account to start making reservations</p>
 
-                <form>
+                <form method="POST" action="{{ route('register.process') }}">
+                    @csrf
                     <div class="mb-3">
-                        <label>Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="Your full name" value="{{ old('name') }}" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Phone number</label>
-                        <input type="text" name="phone_number" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('phone_number') }}" required>
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Ayu Sekar"
+                            value="{{ old('name') }}" required>
                     </div>
 
                     <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="Enter your email" value="{{ old('email') }}" required>
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" name="phone_number" class="form-control" placeholder="0812..."
+                            value="{{ old('phone_number') }}" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="email" class="reg-label">Email</label>
-                        <input type="email" class="form-control p-3 reg-input" id="email"
-                            placeholder="Enter your email..">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-control" placeholder="name@example.com"
+                            value="{{ old('email') }}" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="password" class="reg-label">Password</label>
-                        <input type="password" class="form-control p-3 reg-input" id="password"
-                            placeholder="Create a password..">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password"
+                            class="form-control p-3 reg-input @error('password') is-invalid @enderror" id="password"
+                            placeholder="Create a password.." required>
+                        @error('password')
+                            <div class="text-danger small mt-1">
+                                <strong>{{ $message }}</strong>
+                            </div>
+                        @enderror
                     </div>
 
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input reg-checkbox" id="terms">
-                        <label class="form-check-label" for="terms">I agree to the Terms & Privacy</label>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100 mb-3">Register</button>
-
-                    <p class="text-center small">
-                        Have an account?
-                        <a href="{{ route('login') }}">Log In</a>
-                    </p>
-
-                    <hr>
-
-                    <button type="button" class="btn btn-outline-secondary w-100 mb-2">
-                        Login with Google
-                    </button>
-                    <button type="button" class="btn btn-outline-primary w-100">
-                        Login with Facebook
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100 py-2">Create Account</button>
                 </form>
 
                 <div class="text-center mt-3">
