@@ -11,32 +11,39 @@
                     <h5 class="fw-bold mb-4" style="color: var(--primary)">
                         <i class="fas fa-clipboard-check me-2"></i> Review Reservation
                     </h5>
-
+                    @if(isset($reservation))
                     <div class="reservation-summary bg-light rounded-4 p-4 mb-4">
                         <div class="row g-4">
                             <div class="col-6">
                                 <small class="text-muted d-block text-uppercase small-8 fw-bold">Table</small>
-                                <span class="fw-bold text-dark">Table 05 (VIP Area)</span>
+                                <span class="fw-bold text-dark">Table {{ $reservation->table->table_number }} ({{ ucfirst($reservation->table->area) }} Area)</span>
                             </div>
                             <div class="col-6">
                                 <small class="text-muted d-block text-uppercase small-8 fw-bold">Date</small>
-                                <span class="fw-bold text-dark">30 December 2025</span>
+                                <span class="fw-bold text-dark">{{ \Carbon\Carbon::parse($reservation->reservation_date)->format('d F Y') }}</span>
                             </div>
                             <div class="col-6">
                                 <small class="text-muted d-block text-uppercase small-8 fw-bold">Time Slot</small>
-                                <span class="fw-bold text-dark">19:00 - 21:00</span>
+                                <span class="fw-bold text-dark">{{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($reservation->end_time)->format('H:i') }}</span>
                             </div>
                             <div class="col-6">
                                 <small class="text-muted d-block text-uppercase small-8 fw-bold">Total Guest</small>
-                                <span class="fw-bold text-dark">4 People</span>
+                                <span class="fw-bold text-dark">{{ $reservation->guest_count }} People</span>
                             </div>
                         </div>
                     </div>
 
+                    @if($reservation->special_note)
                     <div class="special-note p-3 border-start border-4 border-warning bg-light rounded-2">
                         <small class="text-muted d-block text-uppercase small-8 fw-bold mb-1">Special Note</small>
-                        <span class="text-dark small italic">"Window seat and birthday decoration, please."</span>
+                        <span class="text-dark small italic">"{{ $reservation->special_note }}"</span>
                     </div>
+                    @endif
+                    @else
+                    <div class="alert alert-warning">
+                        No reservation found. Please create a reservation first.
+                    </div>
+                    @endif
 
                     <div class="d-none d-lg-block mt-5 pt-5 text-center">
                         <img src="https://cdn-icons-png.flaticon.com/512/1532/1532688.png" width="120"

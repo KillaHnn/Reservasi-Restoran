@@ -50,9 +50,10 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:customer')->group(function () {
         Route::get('/customer', fn() => view('dashboard.customer'))->name('customer.dashboard');
-        
+
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
-        Route::get('/reservations/review', [ReservationController::class, 'review'])->name('reservations.review');
+        Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store')->withoutMiddleware(['auth', 'role:customer']);
+        Route::get('/reservations/review/{id?}', [ReservationController::class, 'review'])->name('reservations.review');
         Route::get('/payments', [PaymentController::class, 'indexCustomer'])->name('payments.index');
     });
 

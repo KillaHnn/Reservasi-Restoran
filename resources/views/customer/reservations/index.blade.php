@@ -4,26 +4,27 @@
 @section('page_title', 'Table Reservation')
 
 @section('content')
-    <div class="row g-4">
-        <div class="col-lg-4">
-            <div class="card card-custom border-0 shadow-sm p-4">
-                <h5 class="fw-bold mb-4" style="color: var(--primary)">
-                    <i class="fas fa-calendar-alt me-2"></i> Reservation Detail
-                </h5>
-                <form action="" method="POST">
+    <form action="{{ route('reservations.store') }}" method="POST">
+        @csrf
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card card-custom border-0 shadow-sm p-4">
+                    <h5 class="fw-bold mb-4" style="color: var(--primary)">
+                        <i class="fas fa-calendar-alt me-2"></i> Reservation Detail
+                    </h5>
                     <div class="mb-3">
                         <label class="small fw-bold mb-2">RESERVATION DATE</label>
-                        <input type="date" class="form-control bg-light border-0 p-3" value="{{ date('Y-m-d') }}">
+                        <input type="date" name="reservation_date" class="form-control bg-light border-0 p-3" value="{{ date('Y-m-d') }}" required>
                     </div>
 
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label class="small fw-bold mb-2">START TIME</label>
-                            <input type="time" class="form-control bg-light border-0 p-3" value="18:00">
+                            <input type="time" name="start_time" class="form-control bg-light border-0 p-3" value="18:00" required>
                         </div>
                         <div class="col-6 mb-3">
                             <label class="small fw-bold mb-2">END TIME</label>
-                            <input type="time" class="form-control bg-light border-0 p-3" value="20:00">
+                            <input type="time" name="end_time" class="form-control bg-light border-0 p-3" value="20:00" required>
                         </div>
                     </div>
 
@@ -31,14 +32,13 @@
                         <label class="small fw-bold mb-2">GUEST COUNT</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-0"><i class="fas fa-users"></i></span>
-                            <input type="number" class="form-control bg-light border-0 p-3" placeholder="How many people?"
-                                min="1">
+                            <input type="number" name="guest_count" class="form-control bg-light border-0 p-3" placeholder="How many people?" min="1" required>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="small fw-bold mb-2">SPECIAL NOTE (OPTIONAL)</label>
-                        <textarea class="form-control bg-light border-0 p-3" rows="3" placeholder="Eg: Birthday celebration..."></textarea>
+                        <textarea name="special_note" class="form-control bg-light border-0 p-3" rows="3" placeholder="Eg: Birthday celebration..."></textarea>
                     </div>
 
                     <div class="p-3 mb-4 rounded-3 shadow-sm border-start border-4"
@@ -60,42 +60,42 @@
                         </label>
                     </div>
 
-                    <form action="{{ route('reservations.review') }}">
-                        @csrf
+                    <div class="mt-4">
                         <button type="submit" class="btn btn-resto w-100 py-3 fw-bold shadow-sm">
-                            Review Reservation Details
+                            Create Reservation
                         </button>
-                    </form>
-                </form>
-            </div>
-        </div>
-
-        <div class="col-lg-8">
-            <div class="card card-custom border-0 shadow-sm p-4 h-100">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold mb-0" style="color: var(--primary)">
-                        <i class="fas fa-chair me-2"></i> Select Available Table
-                    </h5>
-                    <span class="badge bg-success-subtle text-success px-3">8 Tables Available</span>
-                </div>
-
-                <div class="row g-3">
-                    @for ($i = 1; $i <= 8; $i++)
-                        <div class="col-md-4 col-6">
-                            <input type="radio" class="btn-check" name="table_id" id="table{{ $i }}"
-                                autocomplete="off">
-                            <label class="btn btn-outline-light w-100 p-4 border-0 shadow-sm table-card"
-                                for="table{{ $i }}" style="background: #f8f9fa; border-radius: 15px;">
-                                <i class="fas fa-utensils mb-3 d-block text-muted fa-2x"></i>
-                                <span class="d-block fw-bold text-dark">Table {{ $i }}</span>
-                                <small class="text-muted">4 Seats</small>
-                            </label>
-                        </div>
-                    @endfor
+                    </div>
                 </div>
             </div>
+
+            <div class="col-lg-8">
+                <div class="card card-custom border-0 shadow-sm p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0" style="color: var(--primary)">
+                            <i class="fas fa-chair me-2"></i> Select Available Table
+                        </h5>
+                        <span class="badge bg-success-subtle text-success px-3">8 Tables Available</span>
+                    </div>
+
+                    <div class="row g-3">
+                        @for ($i = 1; $i <= 8; $i++)
+                            <div class="col-md-4 col-6">
+                                <input type="radio" class="btn-check" name="table_id" id="table{{ $i }}"
+                                    autocomplete="off" value="{{ $i }}" required>
+                                <label class="btn btn-outline-light w-100 p-4 border-0 shadow-sm table-card"
+                                    for="table{{ $i }}" style="background: #f8f9fa; border-radius: 15px;">
+                                    <i class="fas fa-utensils mb-3 d-block text-muted fa-2x"></i>
+                                    <span class="d-block fw-bold text-dark">Table {{ $i }}</span>
+                                    <small class="text-muted">4 Seats</small>
+                                </label>
+                            </div>
+                        @endfor
+                    </div>
+
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 
     <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered shadow-lg">
