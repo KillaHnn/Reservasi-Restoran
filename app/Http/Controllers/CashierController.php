@@ -8,39 +8,48 @@ use Carbon\Carbon;
 
 class CashierController extends Controller
 {
-    public function cashierIndex()
+    public function checkinIndex()
     {
-        $today = now()->toDateString();
+        date_default_timezone_set('Asia/Jakarta');
+        $today = date('Y-m-d');
 
-        // Mengambil reservasi yang SUDAH PAID di tabel payments
+        // Menampilkan tamu yang SUDAH BAYAR tapi statusnya masih PENDING (belum masuk)
         $reservations = Reservation::with(['user', 'table', 'payment'])
-            ->where('reservation_date', $today)
-            // Filter: Hanya yang memiliki payment dengan status 'paid'
-            ->whereHas('payment', function ($query) {
-                $query->where('status_payment', 'paid');
+            ->whereDate('reservation_date', $today)
+            ->where('status', 'pending')
+            ->whereHas('payment', function ($q) {
+                $q->where('status_payment', 'paid');
             })
-            // Filter: Hanya yang belum selesai/batal (masih confirmed atau pending)
-            ->whereIn('status', ['confirmed', 'pending'])
-            ->orderBy('start_time', 'asc')
             ->get();
 
         return view('cashier.checkin.check_in', compact('reservations'));
     }
 
+    public function activeTablesIndex()
+    {
+        date_default_timezone_set('Asia/Jakarta');
+        $today = date('Y-m-d');
+
+        // Menampilkan tamu yang SUDAH MASUK (status confirmed/seated) dan mejanya occupied
+        $reservations = Reservation::with(['user', 'table', 'payment'])
+            ->whereDate('reservation_date', $today)
+            ->where('status', 'confirmed')
+            ->get();
+
+        return view('cashier.checkin.active_tables', compact('reservations'));
+    }
+
     public function checkIn($id)
     {
         try {
-            // Validasi ulang untuk memastikan memang sudah dibayar
             $reservation = Reservation::whereHas('payment', function ($q) {
                 $q->where('status_payment', 'paid');
             })->findOrFail($id);
 
-            // Update status reservasi menjadi 'confirmed' (atau 'seated' jika Anda menambahkannya di enum)
             $reservation->update(['status' => 'confirmed']);
 
-            // Update status meja menjadi terisi
             if ($reservation->table) {
-                $reservation->table->update(['status' => 'occupied']);
+                $reservation->table->update(['status' => 'inactive']);
             }
 
             return response()->json([
@@ -56,11 +65,8 @@ class CashierController extends Controller
     {
         try {
             $reservation = Reservation::findOrFail($id);
-            
-            // Set status menjadi completed (selesai)
             $reservation->update(['status' => 'completed']);
-            
-            // Kembalikan status meja menjadi active (kosong)
+
             if ($reservation->table) {
                 $reservation->table->update(['status' => 'active']);
             }

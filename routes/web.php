@@ -51,9 +51,10 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/cashier/payments/confirmation', [PaymentController::class, 'confirmPayment'])->name('cashier.payments.confirmation');
 
-        Route::get('/cashier/checkin', [CashierController::class, 'cashierIndex'])->name('cashier.checkin.index');
-        Route::post('/cashier/checkin/{id}', [CashierController::class, 'checkIn'])->name('cashier.checkin');
-        Route::post('/cashier/checkout/{id}', [CashierController::class, 'checkOut'])->name('cashier.checkout');
+        Route::get('/cashier/checkin', [CashierController::class, 'checkinIndex'])->name('cashier.checkin.index');
+        Route::get('/cashier/checkin/active-tables', [CashierController::class, 'activeTablesIndex'])->name('cashier.checkin.active_tables');
+        Route::post('/checkin/process/{id}', [CashierController::class, 'checkIn'])->name('checkin.process');
+
         Route::get('/cashier/payments/confirmation', [PaymentController::class, 'showConfirmation'])->name('cashier.payments.confirmation');
         Route::post('/cashier/payments/confirm', [PaymentController::class, 'confirmPayment'])->name('cashier.payments.confirm');
     });
