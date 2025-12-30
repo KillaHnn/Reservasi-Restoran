@@ -45,4 +45,9 @@ class PaymentController extends Controller
             return back()->withErrors(['error' => 'Gagal memproses metode pembayaran.']);
         }
     }
+
+    public function confirmPayment()
+    {
+        return view('cashier.payments.confirmation');
+    }
 }

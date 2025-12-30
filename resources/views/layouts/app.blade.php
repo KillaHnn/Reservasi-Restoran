@@ -55,8 +55,7 @@
                     @elseif(Auth::user()->role == 'cashier')
                         <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
                             Transaction</div>
-                        <a class="nav-link" href="#"><i class="fas fa-cash-register"></i> Point of Sale</a>
-                        <a class="nav-link" href="#"><i class="fas fa-list-check"></i> Orders List</a>
+                        <a class="nav-link" href="{{ route('cashier.payments.confirmation') }}"><i class="fas fa-list-check"></i> List Payment</a>
                     @elseif(Auth::user()->role == 'customer')
                         <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
                             Reservation</div>
