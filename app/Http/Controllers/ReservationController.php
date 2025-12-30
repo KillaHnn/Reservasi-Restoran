@@ -34,7 +34,9 @@ class ReservationController extends Controller
         $request->validate([
             'reservation_date' => 'required|date',
             'start_time' => 'required',
+            'end_time' => 'required',
             'guest_count' => 'required|integer|min:1',
+            'special_note' => 'nullable|string',
         ]);
 
 
@@ -65,7 +67,6 @@ class ReservationController extends Controller
             'user_id' => Auth::id(),
             'table_id' => $table->id,
             'reservation_date' => $request->reservation_date,
-            'phone_number' => $request->phone_number,
             'start_time' => $start,
             'end_time' => $end,
             'guest_count' => $request->guest_count,

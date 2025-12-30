@@ -36,6 +36,12 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admin/users/{id}', [AuthController::class, 'destroy'])->name('admin.users.destroy');
 
         Route::get('/admin/tables', [TableController::class, 'index'])->name('admin.tables.index');
+        Route::get('/admin/tables/create', [TableController::class, 'create'])->name('admin.tables.create');
+        Route::post('/admin/tables', [TableController::class, 'store'])->name('admin.tables.store');
+        Route::get('/admin/tables/{table}', [TableController::class, 'show'])->name('admin.tables.show');
+        Route::get('/admin/tables/{table}/edit', [TableController::class, 'edit'])->name('admin.tables.edit');
+        Route::put('/admin/tables/{table}', [TableController::class, 'update'])->name('admin.tables.update');
+        Route::delete('/admin/tables/{table}', [TableController::class, 'destroy'])->name('admin.tables.destroy');
     });
 
     Route::middleware('role:cashier')->group(function () {

@@ -12,7 +12,8 @@ class TableController extends Controller
      */
     public function index()
     {
-        return view('admin.tables.index');
+        $tables = Table::latest()->get();
+        return view('admin.tables.index', compact('tables'));
     }
 
     /**
@@ -20,7 +21,7 @@ class TableController extends Controller
      */
     public function create()
     {
-        //
+        return redirect()->route('admin.tables.index');
     }
 
     /**
@@ -28,7 +29,20 @@ class TableController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'table_number' => 'required|string|unique:tables,table_number',
+            'capacity' => 'required|integer|min:1',
+            'area' => 'required|in:indoor,outdoor,vip',
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $table = Table::create($data);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['message' => 'Table created', 'data' => $table], 201);
+        }
+
+        return redirect()->route('admin.tables.index')->with('success', 'Table created.');
     }
 
     /**
@@ -36,7 +50,7 @@ class TableController extends Controller
      */
     public function show(Table $table)
     {
-        //
+        return response()->json($table);
     }
 
     /**
@@ -44,7 +58,7 @@ class TableController extends Controller
      */
     public function edit(Table $table)
     {
-        //
+        return response()->json($table);
     }
 
     /**
@@ -52,14 +66,33 @@ class TableController extends Controller
      */
     public function update(Request $request, Table $table)
     {
-        //
+        $data = $request->validate([
+            'table_number' => 'required|string|unique:tables,table_number,' . $table->id,
+            'capacity' => 'required|integer|min:1',
+            'area' => 'required|in:indoor,outdoor,vip',
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $table->update($data);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['message' => 'Table updated', 'data' => $table], 200);
+        }
+
+        return redirect()->route('admin.tables.index')->with('success', 'Table updated.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Table $table)
+    public function destroy(Request $request, Table $table)
     {
-        //
+        $table->delete();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['message' => 'Table deleted'], 200);
+        }
+
+        return redirect()->route('admin.tables.index')->with('success', 'Table deleted.');
     }
 }
