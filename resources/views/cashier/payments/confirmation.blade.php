@@ -42,22 +42,45 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr id="row-124">
-                                    <td class="fw-bold">#RSV-00124</td>
+                                @forelse($payments as $payment)
+                                <tr id="row-{{ $payment->reservation_id }}">
+                                    <td class="fw-bold">#RSV-{{ str_pad($payment->reservation_id, 5, '0', STR_PAD_LEFT) }}</td>
                                     <td>
-                                        <div class="fw-bold text-dark">Budi Santoso</div>
-                                        <small class="text-muted">Table 05 • 19:00 WIB</small>
+                                        <div class="fw-bold text-dark">{{ $payment->reservation->user->name }}</div>
+                                        <small class="text-muted">Table {{ $payment->reservation->table->table_number }} • {{ $payment->reservation->start_time->format('H:i') }} WIB</small>
                                     </td>
-                                    <td><span class="badge bg-info-subtle text-info px-2">BCA Transfer</span></td>
-                                    <td class="fw-bold text-success">Rp 50.000</td>
-                                    <td><span class="badge bg-warning text-dark px-3 py-2 status-label">Waiting</span></td>
+                                    <td><span class="badge bg-info-subtle text-info px-2">{{ ucfirst($payment->payment_method) }} Transfer</span></td>
+                                    <td class="fw-bold text-success">Rp {{ number_format($payment->nominal_deposit, 0, ',', '.') }}</td>
+                                    <td>
+                                        @if($payment->status_payment == 'paid')
+                                            <span class="badge bg-success-subtle text-success px-3 py-2 status-label">
+                                                <i class="fas fa-check-circle me-1"></i> Paid
+                                            </span>
+                                        @elseif($payment->status_payment == 'expired')
+                                            <span class="badge bg-danger-subtle text-danger px-3 py-2 status-label">
+                                                <i class="fas fa-times-circle me-1"></i> Expired
+                                            </span>
+                                        @else
+                                            <span class="badge bg-warning text-dark px-3 py-2 status-label">Unpaid</span>
+                                        @endif
+                                    </td>
                                     <td class="text-center">
                                         <button class="btn btn-success btn-sm px-4 rounded-pill fw-bold btn-confirm"
-                                            onclick="confirmPayment('00124', 'Budi Santoso')">
+                                            onclick="confirmPayment('{{ $payment->reservation_id }}', '{{ $payment->reservation->user->name }}')">
                                             Konfirmasi Lunas
                                         </button>
                                     </td>
                                 </tr>
+                                @empty
+                                <tr>
+                                    <td class="text-center py-4" colspan="6">
+                                        <div class="text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                                            <p>Tidak ada pembayaran yang perlu dikonfirmasi</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -141,27 +164,49 @@
                         }
                     });
 
-                    // Di sini nanti tempat integrasi AJAX ke Controller
-                    setTimeout(() => {
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Pembayaran #' + bookingId +
-                                ' telah diverifikasi. Status reservasi kini: CONFIRMED.',
-                            icon: 'success',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
+                    // AJAX call to confirm payment
+                    $.ajax({
+                        url: '{{ route("cashier.payments.confirm") }}',
+                        method: 'POST',
+                        data: {
+                            reservation_id: bookingId,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: 'Pembayaran #' + bookingId + ' telah diverifikasi.',
+                                    icon: 'success',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
 
-                        // Update tampilan UI secara dummy
-                        const row = document.getElementById('row-' + bookingId);
-                        row.querySelector('.status-label').className =
-                            'badge bg-success-subtle text-success px-3 py-2';
-                        row.querySelector('.status-label').innerHTML =
-                            '<i class="fas fa-check-circle me-1"></i> Paid';
-                        row.querySelector('.btn-confirm').className =
-                            'btn btn-outline-secondary btn-sm px-4 rounded-pill disabled';
-                        row.querySelector('.btn-confirm').innerText = 'Verified';
-                    }, 1500);
+                                // Update tampilan UI
+                                const row = document.getElementById('row-' + bookingId);
+                                row.querySelector('.status-label').className =
+                                    'badge bg-success-subtle text-success px-3 py-2';
+                                row.querySelector('.status-label').innerHTML =
+                                    '<i class="fas fa-check-circle me-1"></i> Paid';
+                                row.querySelector('.btn-confirm').className =
+                                    'btn btn-outline-secondary btn-sm px-4 rounded-pill disabled';
+                                row.querySelector('.btn-confirm').innerText = 'Verified';
+                            } else {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: response.message,
+                                    icon: 'error'
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Terjadi kesalahan saat memproses pembayaran.',
+                                icon: 'error'
+                            });
+                        }
+                    });
                 }
             })
         }

@@ -46,8 +46,28 @@ class PaymentController extends Controller
         }
     }
 
-    public function confirmPayment()
+    public function showConfirmation()
     {
-        return view('cashier.payments.confirmation');
+        $payments = Payment::with(['reservation.user', 'reservation.table'])
+            ->where('status_payment', 'unpaid')
+            ->get();
+
+        return view('cashier.payments.confirmation', compact('payments'));
+    }
+
+    public function confirmPayment(Request $request)
+    {
+        $request->validate([
+            'reservation_id' => 'required|exists:reservations,id',
+        ]);
+
+        $payment = Payment::where('reservation_id', $request->reservation_id)->first();
+
+        if ($payment) {
+            $payment->update(['status_payment' => 'paid']);
+            return response()->json(['success' => true, 'message' => 'Payment confirmed successfully.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Payment not found.'], 404);
     }
 }

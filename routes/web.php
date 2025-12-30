@@ -54,6 +54,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/cashier/checkin', [CashierController::class, 'cashierIndex'])->name('cashier.checkin.index');
         Route::post('/cashier/checkin/{id}', [CashierController::class, 'checkIn'])->name('cashier.checkin');
         Route::post('/cashier/checkout/{id}', [CashierController::class, 'checkOut'])->name('cashier.checkout');
+        Route::get('/cashier/payments/confirmation', [PaymentController::class, 'showConfirmation'])->name('cashier.payments.confirmation');
+        Route::post('/cashier/payments/confirm', [PaymentController::class, 'confirmPayment'])->name('cashier.payments.confirm');
     });
 
     Route::middleware('role:customer')->group(function () {
