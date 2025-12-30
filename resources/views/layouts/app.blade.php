@@ -10,6 +10,12 @@
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
     <link rel="stylesheet" href="{{ asset('css/template.css') }}">
 </head>
 
@@ -44,8 +50,11 @@
                     @if (Auth::user()->role == 'admin')
                         <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
                             Management</div>
-                        <a class="nav-link" href="#"><i class="fas fa-users"></i> Manage Users</a>
+                        <a class="nav-link" href="{{ route('admin.users.index') }}"><i class="fas fa-users"></i> Manage
+                            Users</a>
                         <a class="nav-link" href="#"><i class="fas fa-utensils"></i> Manage Menu</a>
+                        <a class="nav-link" href="{{ route('admin.tables.index') }}"><i class="fas fa-table"></i> Manage
+                            Tables</a>
                         <a class="nav-link" href="#"><i class="fas fa-file-invoice-dollar"></i> Reports</a>
                     @elseif(Auth::user()->role == 'cashier')
                         <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
@@ -55,7 +64,10 @@
                     @elseif(Auth::user()->role == 'customer')
                         <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
                             Reservation</div>
-                        <a class="nav-link" href="#"><i class="fas fa-calendar-plus"></i> Book Table</a>
+                        <a class="nav-link" href="{{ route('reservations.index') }}"><i
+                                class="fas fa-calendar-plus"></i> Book Table</a>
+                        <a class="nav-link" href="{{ route('payments.index') }}"><i class="fas fa-credit-card"></i> My
+                            Payments</a>
                         <a class="nav-link" href="#"><i class="fas fa-history"></i> My History</a>
                     @endif
 
@@ -75,12 +87,40 @@
                 <header class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                     <h2 class="fw-bold" style="color: var(--primary)">@yield('page_title')</h2>
 
-                    <div class="d-flex align-items-center gap-3 bg-white p-2 rounded-pill shadow-sm px-4">
-                        <span
-                            class="badge badge-status text-uppercase d-none d-sm-inline">{{ Auth::user()->role }}</span>
-                        <span class="fw-bold small">{{ Auth::user()->name }}</span>
-                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}&background=A31B31&color=FFC069"
-                            class="rounded-circle" width="35">
+                    <div class="dropdown">
+                        <div class="d-flex align-items-center gap-3 bg-white p-2 rounded-pill shadow-sm px-4"
+                            id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+
+                            <span class="badge badge-status text-uppercase d-none d-sm-inline">
+                                {{ Auth::user()->role }}
+                            </span>
+                            <span class="fw-bold small">{{ Auth::user()->name }}</span>
+                            <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}&background=A31B31&color=FFC069"
+                                class="rounded-circle" width="35">
+                        </div>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 py-2"
+                            aria-labelledby="userDropdown" style="border-radius: 15px; min-width: 200px;">
+                            <li class="px-3 py-2 d-sm-none">
+                                <span class="badge badge-status text-uppercase w-100">{{ Auth::user()->role }}</span>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 px-3" href="{{ route('profile.index') }}">
+                                    <i class="fas fa-user-circle me-2 text-muted"></i> Profile
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider opacity-50">
+                            </li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST" class="d-block">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item py-2 px-3 text-danger fw-bold">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
                     </div>
                 </header>
 
@@ -109,6 +149,7 @@
             }
         });
     </script>
+    @stack('scripts')
 </body>
 
 </html>
