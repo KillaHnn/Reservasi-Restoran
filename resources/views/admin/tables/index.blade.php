@@ -58,6 +58,10 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <form id="globalDeleteForm" method="POST" style="display:none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
                 </div>
             </div>
         </div>
@@ -158,9 +162,9 @@
             $('#tableData').DataTable({
                 "pageLength": 10,
                 "language": {
-                    "search": "", 
-                    "searchPlaceholder": "Search tables...", 
-                    "lengthMenu": "_MENU_", 
+                    "search": "",
+                    "searchPlaceholder": "Search tables...",
+                    "lengthMenu": "_MENU_",
                     "paginate": {
                         "previous": "<i class='fas fa-chevron-left'></i>",
                         "next": "<i class='fas fa-chevron-right'></i>"

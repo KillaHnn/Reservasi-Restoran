@@ -77,9 +77,9 @@
                                         </button>
 
                                         @if (Auth::id() !== $user->id)
-                                            <button class="btn btn-sm btn-outline-danger"
-                                                onclick="confirmDeleteUser('{{ $user->id }}')" title="Delete User">
-                                                <i class="fas fa-trash"></i>
+                                            <button class="btn btn-sm btn-outline-danger" title="Delete User"
+                                                onclick="confirmDeleteUser('{{ $user->id }}')">
+                                                <i class="fas fa-trash-alt"></i>
                                             </button>
                                         @endif
                                     </td>
@@ -87,6 +87,10 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <form id="globalDeleteForm" method="POST" style="display:none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
                 </div>
             </div>
         </div>
@@ -136,11 +140,6 @@
             </div>
         </div>
     </div>
-
-    <form id="formDeleteUser" method="POST" style="display:none;">
-        @csrf
-        @method('DELETE')
-    </form>
 @endsection
 
 @push('scripts')
@@ -163,7 +162,6 @@
                 '#F8F0E3');
         });
 
-        // Fungsi untuk memicu Modal Edit dan mengisi datanya
         function editUser(id, name, email, phone, role) {
             $('#formEditUser').attr('action', '/admin/users/' + id);
             $('#edit_name').val(name);
@@ -173,21 +171,21 @@
             $('#modalEditUser').modal('show');
         }
 
-        // Fungsi Delete dengan SweetAlert2
         function confirmDeleteUser(id) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "This user will be permanently deleted!",
                 icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#A31B31',
-                cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Yes, delete it!',
+                cancelButtonColor: '#6c757d',
+                confirmButtonColor: '#A31B31',
+                showCancelButton: true,
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    let form = $('#formDeleteUser');
-                    form.attr('action', '/admin/users/' + id);
+                    let form = $('#globalDeleteForm');
+                    form.attr('action', '/admin/users/destroy/' + id);
+
                     form.submit();
                 }
             })

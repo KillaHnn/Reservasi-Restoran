@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/admin/users', [AuthController::class, 'index'])->name('admin.users.index');
         Route::put('/admin/users/{id}', [AuthController::class, 'update'])->name('admin.users.update');
-        Route::delete('/admin/users/{id}', [AuthController::class, 'destroy'])->name('admin.users.destroy');
+        Route::delete('/admin/users/destroy/{id}', [AuthController::class, 'destroy'])->name('admin.users.destroy');
 
         Route::get('/admin/tables', [TableController::class, 'index'])->name('admin.tables.index');
         Route::get('/admin/tables/create', [TableController::class, 'create'])->name('admin.tables.create');
@@ -52,8 +52,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/customer', fn() => view('dashboard.customer'))->name('customer.dashboard');
         
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
+        Route::get('/reservations/review', [ReservationController::class, 'review'])->name('reservations.review');
         Route::get('/payments', [PaymentController::class, 'indexCustomer'])->name('payments.index');
     });
+
+    Route::get('/history', [ReservationController::class, 'history'])->name('history.index');
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
