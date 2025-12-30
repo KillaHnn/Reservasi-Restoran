@@ -54,7 +54,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
         Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store')->withoutMiddleware(['auth', 'role:customer']);
         Route::get('/reservations/review/{id?}', [ReservationController::class, 'review'])->name('reservations.review');
-        Route::get('/payments', [PaymentController::class, 'indexCustomer'])->name('payments.index');
+
+        Route::post('/payment/process', [PaymentController::class, 'paymentProcess'])->name('payment.process');
+
+        Route::get('/payment/instructions/{method}/{reservation_id}', [PaymentController::class, 'showInstructions'])->name('payment.instructions');
     });
 
     Route::get('/history', [ReservationController::class, 'history'])->name('history.index');
