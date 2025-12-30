@@ -47,7 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:cashier')->group(function () {
         Route::get('/cashier', fn() => view('dashboard.cashier'))->name('cashier.dashboard');
 
-        Route::get('/cashier/payments/confirmation', [PaymentController::class, 'confirmPayment'])->name('cashier.payments.confirmation');
+        Route::get('/cashier/payments/confirmation', [PaymentController::class, 'showConfirmation'])->name('cashier.payments.confirmation');
+        Route::post('/cashier/payments/confirm', [PaymentController::class, 'confirmPayment'])->name('cashier.payments.confirm');
     });
 
     Route::middleware('role:customer')->group(function () {
