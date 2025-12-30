@@ -47,7 +47,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-login w-100">Log In</button>
-                </form>"
+                </form>
 
                 <div class="text-center mt-3">
                     
