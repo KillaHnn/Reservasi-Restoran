@@ -62,10 +62,6 @@
                             Reservation</div>
                         <a class="nav-link" href="{{ route('reservations.index') }}"><i
                                 class="fas fa-calendar-plus"></i> Book Table</a>
-                        <a class="nav-link" href="{{ route('reservations.review') }}"><i
-                                class="fas fa-calendar-plus"></i> Detail</a>
-                        <a class="nav-link" href="{{ route('payments.index') }}"><i class="fas fa-credit-card"></i> My
-                            Payments</a>
                     @endif
 
                     @if (in_array(Auth::user()->role, ['customer', 'cashier', 'admin']))
