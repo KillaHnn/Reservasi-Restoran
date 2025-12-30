@@ -10,7 +10,7 @@
                 <h5 class="fw-bold mb-4" style="color: var(--primary)">
                     <i class="fas fa-calendar-alt me-2"></i> Reservation Detail
                 </h5>
-                <form action="#" method="POST">
+                <form action="" method="POST">
                     <div class="mb-3">
                         <label class="small fw-bold mb-2">RESERVATION DATE</label>
                         <input type="date" class="form-control bg-light border-0 p-3" value="{{ date('Y-m-d') }}">
@@ -60,9 +60,12 @@
                         </label>
                     </div>
 
-                    <button type="button" class="btn btn-resto w-100 py-3 fw-bold shadow-sm">
-                        Confirm & Pay Deposit
-                    </button>
+                    <form action="{{ route('reservations.review') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-resto w-100 py-3 fw-bold shadow-sm">
+                            Review Reservation Details
+                        </button>
+                    </form>
                 </form>
             </div>
         </div>

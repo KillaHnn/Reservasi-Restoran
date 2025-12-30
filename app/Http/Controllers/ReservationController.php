@@ -77,35 +77,13 @@ class ReservationController extends Controller
         return redirect()->route('customer.dashboard')->with('success', 'Reservation created successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Reservation $reservation)
+    public function history() 
     {
-        //
+        return view ('history.index');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Reservation $reservation)
+    public function review (Request $request)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Reservation $reservation)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Reservation $reservation)
-    {
-        //
+        return view('customer.reservations.review');
     }
 }

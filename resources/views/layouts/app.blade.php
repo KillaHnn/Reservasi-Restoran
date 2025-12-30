@@ -11,11 +11,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
-
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-
     <link rel="stylesheet" href="{{ asset('css/template.css') }}">
 </head>
 
@@ -66,9 +61,15 @@
                             Reservation</div>
                         <a class="nav-link" href="{{ route('reservations.index') }}"><i
                                 class="fas fa-calendar-plus"></i> Book Table</a>
+                        <a class="nav-link" href="{{ route('reservations.review') }}"><i
+                                class="fas fa-calendar-plus"></i> Detail</a>
                         <a class="nav-link" href="{{ route('payments.index') }}"><i class="fas fa-credit-card"></i> My
                             Payments</a>
-                        <a class="nav-link" href="#"><i class="fas fa-history"></i> My History</a>
+                    @endif
+
+                    @if (in_array(Auth::user()->role, ['customer', 'cashier', 'admin']))
+                        <a class="nav-link" href="{{ route('history.index') }}"><i class="fas fa-history"></i> My
+                            History</a>
                     @endif
 
                     <div class="mt-auto pb-4">
@@ -129,6 +130,10 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
