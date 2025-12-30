@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CashierController;
+use App\Http\Controllers\DasboardController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
@@ -29,7 +31,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
 
     Route::middleware('role:admin')->group(function () {
-        Route::get('/admin', fn() => view('dashboard.admin'))->name('admin.dashboard');
+        Route::get('/admin', [DasboardController::class, 'admin'])->name('admin.dashboard');
 
         Route::get('/admin/users', [AuthController::class, 'index'])->name('admin.users.index');
         Route::put('/admin/users/{id}', [AuthController::class, 'update'])->name('admin.users.update');
@@ -45,13 +47,17 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:cashier')->group(function () {
-        Route::get('/cashier', fn() => view('dashboard.cashier'))->name('cashier.dashboard');
+        Route::get('/cashier', [DasboardController::class, 'cashier'])->name('cashier.dashboard');
 
         Route::get('/cashier/payments/confirmation', [PaymentController::class, 'confirmPayment'])->name('cashier.payments.confirmation');
+
+        Route::get('/cashier/checkin', [CashierController::class, 'cashierIndex'])->name('cashier.checkin.index');
+        Route::post('/cashier/checkin/{id}', [CashierController::class, 'checkIn'])->name('cashier.checkin');
+        Route::post('/cashier/checkout/{id}', [CashierController::class, 'checkOut'])->name('cashier.checkout');
     });
 
     Route::middleware('role:customer')->group(function () {
-        Route::get('/customer', fn() => view('dashboard.customer'))->name('customer.dashboard');
+        Route::get('/customer', [DasboardController::class, 'customer'])->name('customer.dashboard');
 
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
         Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store')->withoutMiddleware(['auth', 'role:customer']);

@@ -40,4 +40,9 @@ class Reservation extends Model
     {
         return $this->belongsTo(Table::class);
     }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
 }

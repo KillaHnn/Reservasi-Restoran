@@ -39,11 +39,9 @@
                 </div>
 
                 <div class="nav flex-column h-100">
-                    <a class="nav-link {{ request()->is('*/dashboard') ? 'active' : '' }}" href="#">
-                        <i class="fas fa-chart-line"></i> Dashboard
-                    </a>
-
                     @if (Auth::user()->role == 'admin')
+                     <a class="nav-link" href="{{ route('admin.dashboard') }}"><i
+                                class="fas fa-chart-line"></i> Dashboard</a>
                         <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
                             Management</div>
                         <a class="nav-link" href="{{ route('admin.users.index') }}"><i class="fas fa-users"></i> Manage
@@ -53,9 +51,14 @@
                             Tables</a>
                         <a class="nav-link" href="#"><i class="fas fa-file-invoice-dollar"></i> Reports</a>
                     @elseif(Auth::user()->role == 'cashier')
+                     <a class="nav-link" href="{{ route('cashier.dashboard') }}"><i
+                                class="fas fa-chart-line"></i> Dashboard</a>
                         <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
                             Transaction</div>
-                        <a class="nav-link" href="{{ route('cashier.payments.confirmation') }}"><i class="fas fa-list-check"></i> List Payment</a>
+                        <a class="nav-link" href="{{ route('cashier.payments.confirmation') }}"><i
+                                class="fas fa-list-check"></i> List Payment</a>
+                        <a class="nav-link" href="{{ route('cashier.checkin.index') }}"><i
+                                class="fas fa-user-check"></i>Check-in</a>
                     @elseif(Auth::user()->role == 'customer')
                         <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
                             Reservation</div>
