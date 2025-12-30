@@ -36,46 +36,44 @@ class ReservationController extends Controller
             'start_time' => 'required',
             'end_time' => 'required',
             'guest_count' => 'required|integer|min:1',
+            'table_id' => 'required|exists:tables,id',
             'special_note' => 'nullable|string',
         ]);
 
-
         $start = Carbon::parse($request->start_time);
-        $end = $start->copy()->addHours(2);
+        $end = Carbon::parse($request->end_time);
 
-
-        $table = Table::where('status', 'active')
-            ->where('capacity', '>=', $request->guest_count)
-            ->get()
-            ->first(function ($table) use ($request, $start, $end) {
-                return !Reservation::where('table_id', $table->id)
-                    ->where('reservation_date', $request->reservation_date)
-                    ->whereIn('status', ['pending', 'confirmed'])
-                    ->where(function ($q) use ($start, $end) {
-                        $q->where('start_time', '<', $end)
-                            ->where('end_time', '>', $start);
-                    })->exists();
-            });
-
-
-        if (!$table) {
-            return back()->withErrors('Meja tidak tersedia');
+        // Check if the selected table is available
+        $table = Table::find($request->table_id);
+        if (!$table || $table->status !== 'active' || $table->capacity < $request->guest_count) {
+            return back()->withErrors('Meja tidak tersedia atau tidak sesuai kapasitas');
         }
 
+        // Check for conflicting reservations
+        $conflictingReservation = Reservation::where('table_id', $table->id)
+            ->where('reservation_date', $request->reservation_date)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->where(function ($q) use ($start, $end) {
+                $q->where('start_time', '<', $end)
+                    ->where('end_time', '>', $start);
+            })->exists();
 
-        Reservation::create([
+        if ($conflictingReservation) {
+            return back()->withErrors('Meja sudah dipesan pada waktu tersebut');
+        }
+
+        $reservation = Reservation::create([
             'user_id' => Auth::id(),
             'table_id' => $table->id,
             'reservation_date' => $request->reservation_date,
-            'start_time' => $start,
-            'end_time' => $end,
+            'start_time' => $start->format('H'),
+            'end_time' => $end->format('H'),
             'guest_count' => $request->guest_count,
             'special_note' => $request->special_note,
             'status' => 'pending'
         ]);
 
-
-        return redirect()->route('customer.dashboard')->with('success', 'Reservation created successfully');
+        return redirect()->route('reservations.review', $reservation->id)->with('success', 'Reservasi berhasil dibuat');
     }
 
     public function history() 
@@ -83,8 +81,12 @@ class ReservationController extends Controller
         return view ('history.index');
     }
 
-    public function review (Request $request)
+    public function review (Request $request, $id = null)
     {
+        if ($id) {
+            $reservation = Reservation::findOrFail($id);
+            return view('customer.reservations.review', compact('reservation'));
+        }
         return view('customer.reservations.review');
     }
 }
