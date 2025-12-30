@@ -13,7 +13,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-hover align-middle" id="historyTable">
                     <thead class="bg-light">
                         <tr>
                             <th class="border-0 px-3 py-3 small fw-bold">BOOKING ID</th>
@@ -31,36 +31,28 @@
                                 $statusPayment = $payment->status_payment ?? 'unpaid';
                             @endphp
                             <tr>
-                                <td class="px-3 fw-bold text-dark">
-                                    #RSV-{{ str_pad($res->id, 5, '0', STR_PAD_LEFT) }}
-                                </td>
-
+                                <td class="px-3 fw-bold text-dark">#RSV-{{ str_pad($res->id, 5, '0', STR_PAD_LEFT) }}</td>
                                 <td>
                                     <div class="fw-bold">
                                         {{ \Carbon\Carbon::parse($res->reservation_date)->format('d M Y') }}</div>
                                     <small class="text-muted">{{ date('H:i', strtotime($res->start_time)) }}</small>
                                 </td>
-
                                 <td>
                                     <span class="badge bg-light text-dark border">
                                         {{ $res->table->name ?? 'Table ' . $res->table_id }}
                                     </span>
                                 </td>
-
                                 <td>
                                     @if ($statusPayment == 'paid')
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
-                                            <i class="fas fa-check-circle me-1"></i> Paid
-                                        </span>
+                                        <span class="badge bg-success-subtle text-success px-3 py-2"><i
+                                                class="fas fa-check-circle me-1"></i> Paid</span>
                                     @elseif($statusPayment == 'expired')
                                         <span class="badge bg-secondary-subtle text-secondary px-3 py-2">Expired</span>
                                     @else
-                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
-                                            <i class="fas fa-clock me-1"></i> Unpaid
-                                        </span>
+                                        <span class="badge bg-danger-subtle text-danger px-3 py-2"><i
+                                                class="fas fa-clock me-1"></i> Unpaid</span>
                                     @endif
                                 </td>
-
                                 <td>
                                     @if ($res->status == 'pending')
                                         <span
@@ -73,14 +65,12 @@
                                             class="badge bg-danger-subtle text-danger px-3 py-2 text-capitalize">{{ $res->status }}</span>
                                     @endif
                                 </td>
-
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
                                         <button class="btn btn-sm btn-outline-dark px-3" data-bs-toggle="modal"
                                             data-bs-target="#detailModal{{ $res->id }}">
                                             <i class="fas fa-eye"></i>
                                         </button>
-
                                         @if ($statusPayment == 'unpaid')
                                             <a href="{{ route('payment.instructions', ['method' => $payment->payment_method ?? 'bca', 'reservation_id' => $res->id]) }}"
                                                 class="btn btn-sm btn-success px-3 shadow-sm fw-bold">
@@ -90,89 +80,37 @@
                                     </div>
                                 </td>
                             </tr>
-
-                            <div class="modal fade" id="detailModal{{ $res->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content overflow-hidden" style="border-radius: 20px; border: none;">
-                                        <div class="text-center p-4 text-white" style="background: var(--primary);">
-                                            <h6 class="text-uppercase small mb-3 opacity-75">Booking Confirmation</h6>
-                                            <div class="bg-white p-2 d-inline-block rounded-3 mb-3 shadow-sm">
-                                                {!! QrCode::size(120)->margin(1)->generate('RSV-' . $res->id) !!}
-                                            </div>
-                                            <h5 class="fw-bold mb-0">#RSV-{{ str_pad($res->id, 5, '0', STR_PAD_LEFT) }}</h5>
-                                        </div>
-
-                                        <div class="modal-body p-4">
-                                            <div class="p-3 rounded-4 mb-4 border shadow-sm bg-light">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="small text-muted">Status Pembayaran:</span>
-                                                    <span
-                                                        class="badge {{ $statusPayment == 'paid' ? 'bg-success' : 'bg-danger' }}">
-                                                        {{ strtoupper($statusPayment) }}
-                                                    </span>
-                                                </div>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <span class="small text-muted">Metode:</span>
-                                                    <span
-                                                        class="fw-bold text-uppercase">{{ $payment->payment_method ?? '-' }}</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="row g-3">
-                                                <div class="col-6">
-                                                    <label class="text-muted small d-block">Table Number</label>
-                                                    <span class="fw-bold">{{ $res->table->name ?? 'TBA' }}</span>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="text-muted small d-block">Guests</label>
-                                                    <span class="fw-bold">{{ $res->guest_count }} People</span>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="text-muted small d-block">Date</label>
-                                                    <span
-                                                        class="fw-bold text-maroon">{{ \Carbon\Carbon::parse($res->reservation_date)->format('d M Y') }}</span>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="text-muted small d-block">Time Slot</label>
-                                                    <span class="fw-bold">{{ date('H:i', strtotime($res->start_time)) }} -
-                                                        {{ date('H:i', strtotime($res->end_time)) }}</span>
-                                                </div>
-                                                <div class="col-12 mt-3">
-                                                    <label class="text-muted small d-block">Special Note</label>
-                                                    <p class="small fst-italic text-muted">
-                                                        "{{ $res->special_note ?? 'No special instructions' }}"</p>
-                                                </div>
-                                            </div>
-
-                                            <button type="button"
-                                                class="btn btn-secondary w-100 py-2 mt-3 fw-bold shadow-sm"
-                                                data-bs-dismiss="modal" style="border-radius: 10px;">
-                                                Close Detail
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
-                                    <i class="fas fa-calendar-times fa-3x mb-3 opacity-25"></i>
-                                    <p>You have no reservation history yet.</p>
-                                    <a href="{{ route('reservations.index') }}"
-                                        class="btn btn-resto px-4 mt-2 shadow-sm">Book a Table Now</a>
-                                </td>
-                            </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+
+            @foreach ($reservations as $res)
+                @php
+                    $payment = $res->payment;
+                    $statusPayment = $payment->status_payment ?? 'unpaid';
+                @endphp
+                <div class="modal fade" id="detailModal{{ $res->id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content overflow-hidden" style="border-radius: 20px; border: none;">
+                            <div class="text-center p-4 text-white" style="background: var(--primary);">
+                                <h5 class="fw-bold mb-0">#RSV-{{ str_pad($res->id, 5, '0', STR_PAD_LEFT) }}</h5>
+                            </div>
+                            <div class="modal-body p-4">
+                                <button type="button" class="btn btn-secondary w-100 py-2 mt-3 fw-bold shadow-sm"
+                                    data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 
     <style>
         :root {
             --primary: #800000;
-            /* Sesuaikan dengan warna brand resto Anda */
         }
 
         .text-maroon {
@@ -218,3 +156,22 @@
         }
     </style>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#historyTable').DataTable({
+                "pageLength": 10,
+                "language": {
+                    "search": "",
+                    "searchPlaceholder": "Search tables...",
+                    "lengthMenu": "_MENU_",
+                    "paginate": {
+                        "previous": "<i class='fas fa-chevron-left'></i>",
+                        "next": "<i class='fas fa-chevron-right'></i>"
+                    }
+                },
+                "dom": '<"d-flex justify-content-between align-items-center mb-3"f l>rt<"d-flex justify-content-between align-items-center mt-3"i p>'
+            });
+        });
+    </script>
+@endpush
