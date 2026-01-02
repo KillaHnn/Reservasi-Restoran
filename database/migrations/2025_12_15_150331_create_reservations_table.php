@@ -19,7 +19,7 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->integer('guest_count');
-            $table->enum('status', ['pending', 'confirmed','occupied', 'canceled', 'completed'])->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed'])->default('pending');
             $table->text('special_note')->nullable();
             $table->timestamps();
         });

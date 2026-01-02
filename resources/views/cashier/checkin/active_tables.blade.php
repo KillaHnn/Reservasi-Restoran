@@ -79,7 +79,6 @@
     <style>
         :root {
             --primary: #800000;
-            /* Maroon Theme */
         }
 
         .text-maroon {
@@ -123,7 +122,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* DataTable Overrides */
         .page-item.active .page-link {
             background-color: var(--primary) !important;
             border-color: var(--primary) !important;
@@ -178,7 +176,7 @@
                         showConfirmButton: false
                     });
 
-                    fetch(`/checkout/${id}`, {
+                    fetch(`/checkout/process/${id}`, {
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

@@ -1,0 +1,48 @@
+:root {
+    --primary: #A31B31;
+    --accent: #FFC069;
+    --bg-cream: #F8F0E3;
+}
+
+body {
+    background-color: var(--bg-cream);
+    font-family: 'Poppins', sans-serif;
+}
+
+.error-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.error-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 30px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+    max-width: 500px;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.btn-back {
+    background-color: var(--primary);
+    color: white;
+    border-radius: 12px;
+    padding: 10px 25px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-back:hover {
+    background-color: #821527;
+    color: white;
+}

@@ -16,7 +16,6 @@
 </head>
 
 <body>
-
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <nav class="mobile-nav d-lg-none">
@@ -29,7 +28,7 @@
     <div class="container-fluid">
         <div class="row">
             <nav class="col-md-2 sidebar shadow" id="mainSidebar">
-                <div class="text-center mb-5 d-none d-lg-block">
+                <div class="text-center mb-3 d-none d-lg-block">
                     <h3 class="fw-bold" style="color: var(--accent)">LUXE <span class="text-white">RESTO</span></h3>
                     <hr style="border-color: var(--accent)">
                 </div>
@@ -39,6 +38,11 @@
                 </div>
 
                 <div class="nav flex-column h-100">
+
+                    @php
+                        $role = auth()->check() ? auth()->user()->role : null;
+                    @endphp
+
                     @if (Auth::user()->role == 'admin')
                         <a class="nav-link" href="{{ route('admin.dashboard') }}"><i class="fas fa-chart-line"></i>
                             Dashboard</a>
@@ -48,39 +52,45 @@
                             Users</a>
                         <a class="nav-link" href="{{ route('admin.tables.index') }}"><i class="fas fa-table"></i> Manage
                             Tables</a>
-                        <a class="nav-link" href="#"><i class="fas fa-file-invoice-dollar"></i> Reports</a>
-                    @elseif(Auth::user()->role == 'cashier')
+                        <a class="nav-link" href="{{ route('history.admin') }}"><i class="fas fa-history"></i>
+                            History</a>
+                        <a class="nav-link" href="{{ route('admin.report.index') }}"><i
+                                class="fas fa-file-invoice-dollar"></i>
+                            Report</a>
+                    @endif
+
+                    @if (Auth::user()->role == 'cashier')
                         <a class="nav-link" href="{{ route('cashier.dashboard') }}"><i class="fas fa-chart-line"></i>
                             Dashboard</a>
                         <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
                             Transaction</div>
+                        <a class="nav-link" href="{{ route('history.cashier') }}"><i class="fas fa-history"></i>
+                            History</a>
+                        <a class="nav-link" href="{{ route('cashier.report.index') }}"><i
+                                class="fas fa-file-invoice-dollar"></i>
+                            Report</a>
+                    @endif
+
+                    @if (Auth::user()->role == 'customer')
+                        <a class="nav-link" href="{{ route('customer.dashboard') }}"><i class="fas fa-chart-line"></i>
+                            Dashboard</a>
+                        <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
+                            Reservation</div>
+                        <a class="nav-link" href="{{ route('reservations.index') }}"><i
+                                class="fas fa-calendar-plus"></i> Book Table</a>
+                        <a class="nav-link" href="{{ route('history.index') }}"><i class="fas fa-history"></i> My
+                            History</a>
+                    @endif
+
+                    @if (in_array($role, ['admin', 'cashier']))
                         <a class="nav-link" href="{{ route('cashier.payments.confirmation') }}"><i
                                 class="fas fa-list-check"></i> List Payment</a>
                         <a class="nav-link" href="{{ route('cashier.checkin.index') }}"><i
                                 class="fas fa-user-check"></i>Check-in</a>
                         <a class="nav-link" href="{{ route('cashier.checkin.active_tables') }}"><i
                                 class="fas fa-table"></i> Active Tables</a>
-                    @elseif(Auth::user()->role == 'customer')
-                        <div class="small fw-bold text-uppercase mt-4 mb-2" style="color: var(--accent); opacity: 0.6">
-                            Reservation</div>
-                        <a class="nav-link" href="{{ route('reservations.index') }}"><i
-                                class="fas fa-calendar-plus"></i> Book Table</a>
                     @endif
 
-                    @if (in_array(Auth::user()->role, ['customer', 'cashier', 'admin']))
-                        <a class="nav-link" href="{{ route('history.index') }}"><i class="fas fa-history"></i> My
-                            History</a>
-                    @endif
-
-                    <div class="mt-auto pb-4">
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn w-100 fw-bold"
-                                style="color: var(--accent); border: 1px solid var(--accent)">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </button>
-                        </form>
-                    </div>
                 </div>
             </nav>
 
@@ -124,13 +134,13 @@
                         </ul>
                     </div>
                 </header>
-
                 @yield('content')
             </main>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>

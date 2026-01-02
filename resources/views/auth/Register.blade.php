@@ -23,20 +23,30 @@
                     @csrf
                     <div class="mb-3">
                         <label class="form-label">Full Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="Ayu Sekar"
-                            value="{{ old('name') }}" required>
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                            placeholder="Ayu Sekar" value="{{ old('name') }}" required>
+                        @error('name')
+                            <div class="invalid-feedback small">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Phone Number</label>
-                        <input type="text" name="phone_number" class="form-control" placeholder="0812..."
+                        <input type="text" name="phone_number"
+                            class="form-control @error('phone_number') is-invalid @enderror" placeholder="0812..."
                             value="{{ old('phone_number') }}" required>
+                        @error('phone_number')
+                            <div class="invalid-feedback small">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Email Address</label>
-                        <input type="email" name="email" class="form-control" placeholder="name@example.com"
-                            value="{{ old('email') }}" required>
+                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                            placeholder="name@example.com" value="{{ old('email') }}" required>
+                        @error('email')
+                            <div class="invalid-feedback small">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3">
@@ -45,29 +55,19 @@
                             class="form-control p-3 reg-input @error('password') is-invalid @enderror" id="password"
                             placeholder="Create a password.." required>
                         @error('password')
-                            <div class="text-danger small mt-1">
-                                <strong>{{ $message }}</strong>
-                            </div>
+                            <div class="invalid-feedback small">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 py-2">Create Account</button>
                 </form>
 
-                <div class="text-center mt-3">
+                <div class="text-center mt-5">
                     Already have an account? <a href="/login" class="reg-link">Log In</a>
-                </div>
-
-                <div class="reg-separator">Or register with</div>
-
-                <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-outline-secondary w-100"><i class="fab fa-google text-danger"></i>
-                        Google</button>
-                    <button class="btn btn-outline-secondary w-100"><i class="fab fa-facebook-f text-primary"></i>
-                        Facebook</button>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

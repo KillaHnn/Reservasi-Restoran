@@ -12,7 +12,6 @@ class PaymentController extends Controller
     public function showInstructions($method, $reservation_id)
     {
         $reservation = Reservation::findOrFail($reservation_id);
-
         return view('customer.payments.instructions', compact('method', 'reservation'));
     }
 

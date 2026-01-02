@@ -4,26 +4,6 @@
 
 @section('content')
     <div class="container-fluid py-4">
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 bg-primary text-white" style="border-radius: 15px;">
-                    <small class="opacity-75">Perlu Konfirmasi</small>
-                    <h3 class="fw-bold mb-0">5 <span class="fs-6 fw-normal">Pembayaran</span></h3>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 bg-success text-white" style="border-radius: 15px;">
-                    <small class="opacity-75">Dikonfirmasi Hari Ini</small>
-                    <h3 class="fw-bold mb-0">12 <span class="fs-6 fw-normal">Reservasi</span></h3>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3 bg-dark text-white" style="border-radius: 15px;">
-                    <small class="opacity-75">Total Deposit Masuk</small>
-                    <h3 class="fw-bold mb-0">Rp 600.000</h3>
-                </div>
-            </div>
-        </div>
 
         <div class="col-12">
             <div class="card border-0 shadow-sm p-4" style="border-radius: 20px;">
@@ -61,7 +41,6 @@
                                     </td>
                                     <td>
                                         @php
-                                            // PERBAIKAN: Gunakan variabel $payment, bukan $res
                                             $status = strtolower($payment->status_payment ?? 'unpaid');
                                         @endphp
 
@@ -178,7 +157,7 @@
                             if (response.success) {
                                 Swal.fire('Berhasil!', response.message, 'success').then(() => {
                                     location
-                                        .reload(); // Lebih aman reload jika menggunakan DataTables client-side
+                                        .reload();
                                 });
                             } else {
                                 Swal.fire('Error!', response.message, 'error');

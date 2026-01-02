@@ -5,6 +5,7 @@
 @section('content')
     <div class="container-fluid py-4">
 
+        {{-- Welcome Header Card --}}
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card border-0 shadow-lg overflow-hidden animate__animated animate__fadeIn"
@@ -12,7 +13,7 @@
                     <div class="card-body p-5 position-relative">
                         <div class="row align-items-center">
                             <div class="col-md-8 text-white" style="z-index: 2;">
-                                <h1 class="display-5 fw-bold mb-2">Selamat Datang, {{ Auth::user()->name ?? 'Super Kasir' }}!</h1>
+                                <h1 class="display-5 fw-bold mb-2">Selamat Datang, {{ Auth::user()->name ?? 'Kasir' }}!</h1>
                                 <p class="lead opacity-75 mb-4">Semangat melayani! Mari buat setiap transaksi menjadi luar
                                     biasa hari ini.</p>
                                 <div class="d-flex gap-3">
@@ -33,13 +34,15 @@
             </div>
         </div>
 
+        {{-- Statistics Row --}}
         <div class="row g-4 mb-5">
+            {{-- Total Reservasi --}}
             <div class="col-md-3">
                 <div class="card border-0 shadow-sm card-hover h-100 p-3" style="border-radius: 20px;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <small class="text-muted fw-bold">RESERVASI HARI INI</small>
-                            <h2 class="fw-bold mt-1 mb-0 text-dark">24</h2>
+                            <h2 class="fw-bold mt-1 mb-0 text-dark">{{ $todayReservationsCount }}</h2>
                         </div>
                         <div class="icon-box bg-danger-gradient shadow-danger">
                             <i class="fas fa-calendar-check text-white"></i>
@@ -47,12 +50,13 @@
                     </div>
                 </div>
             </div>
+            {{-- Status Paid --}}
             <div class="col-md-3">
                 <div class="card border-0 shadow-sm card-hover h-100 p-3" style="border-radius: 20px;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <small class="text-muted fw-bold">STATUS PAID</small>
-                            <h2 class="fw-bold mt-1 mb-0 text-dark">18</h2>
+                            <h2 class="fw-bold mt-1 mb-0 text-dark">{{ $paidCount }}</h2>
                         </div>
                         <div class="icon-box bg-success-gradient shadow-success">
                             <i class="fas fa-check-double text-white"></i>
@@ -60,12 +64,13 @@
                     </div>
                 </div>
             </div>
+            {{-- Meja Terisi --}}
             <div class="col-md-3">
                 <div class="card border-0 shadow-sm card-hover h-100 p-3" style="border-radius: 20px;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <small class="text-muted fw-bold">MEJA TERISI</small>
-                            <h2 class="fw-bold mt-1 mb-0 text-dark">12</h2>
+                            <h2 class="fw-bold mt-1 mb-0 text-dark">{{ $activeTablesCount }}</h2>
                         </div>
                         <div class="icon-box bg-info-gradient shadow-info">
                             <i class="fas fa-chair text-white"></i>
@@ -73,12 +78,13 @@
                     </div>
                 </div>
             </div>
+            {{-- Waiting List --}}
             <div class="col-md-3">
                 <div class="card border-0 shadow-sm card-hover h-100 p-3" style="border-radius: 20px;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <small class="text-muted fw-bold">WAITING LIST</small>
-                            <h2 class="fw-bold mt-1 mb-0 text-dark">6</h2>
+                            <h2 class="fw-bold mt-1 mb-0 text-dark">{{ $waitingCount }}</h2>
                         </div>
                         <div class="icon-box bg-warning-gradient shadow-warning">
                             <i class="fas fa-user-clock text-white"></i>
@@ -89,6 +95,7 @@
         </div>
 
         <div class="row g-4">
+            {{-- Left Column: Antrean Table --}}
             <div class="col-lg-8">
                 <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 25px;">
                     <div class="d-flex align-items-center mb-4">
@@ -100,44 +107,75 @@
                     <div class="table-responsive">
                         <table class="table align-middle">
                             <tbody>
-                                <tr>
-                                    <td style="width: 50px;">
-                                        <img src="https://ui-avatars.com/api/?name=Rizky&background=e3342f&color=fff"
-                                            class="rounded-circle" width="45">
-                                    </td>
-                                    <td>
-                                        <h6 class="fw-bold mb-0">Rizky Perdana</h6>
-                                        <small class="text-muted">Table M-01 • 4 Pax</small>
-                                    </td>
-                                    <td class="text-end">
-                                        <span
-                                            class="badge bg-light text-dark rounded-pill border mb-2 d-inline-block px-3">19:00</span>
-                                        <button
-                                            class="btn btn-danger btn-sm rounded-pill px-4 shadow-sm fw-bold d-block ms-auto">Process
-                                            Check-in</button>
-                                    </td>
-                                </tr>
+                                @forelse($upcomingCheckins as $checkin)
+                                    <tr>
+                                        <td style="width: 50px;">
+                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($checkin->user->name) }}&background=e3342f&color=fff"
+                                                class="rounded-circle" width="45">
+                                        </td>
+                                        <td>
+                                            <h6 class="fw-bold mb-0">{{ $checkin->user->name }}</h6>
+                                            <small class="text-muted">
+                                                Table: {{ $checkin->table->table_number ?? 'TBA' }} •
+                                                {{ $checkin->pax ?? '0' }} Pax
+                                            </small>
+                                        </td>
+                                        <td class="text-end">
+                                            <span
+                                                class="badge bg-light text-dark rounded-pill border mb-2 d-inline-block px-3">
+                                                {{ \Carbon\Carbon::parse($checkin->start_time)->format('H:i') }}
+                                            </span>
+                                            <a href="{{ route('cashier.checkin.index') }}"
+                                                class="btn btn-danger btn-sm rounded-pill px-4 shadow-sm fw-bold d-block ms-auto">
+                                                Process Check-in
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4 text-muted small">
+                                            Tidak ada antrean check-in untuk hari ini.
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
+            {{-- Right Column: Navigation Shortcuts --}}
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm p-4" style="border-radius: 25px; background-color: #fff5f5;">
-                    <h5 class="fw-bold mb-4 text-center text-dark">Menu Navigasi</h5>
+                <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 25px; background-color: #fff5f5;">
+                    <h5 class="fw-bold mb-4 text-center text-dark">Menu Navigasi Cepat</h5>
                     <div class="row g-3">
                         <div class="col-6">
-                            <a href="#" class="btn btn-white w-100 py-4 border-0 shadow-sm shortcut-card">
+                            <a href="{{ route('cashier.checkin.index') }}"
+                                class="btn btn-white w-100 py-4 border-0 shadow-sm shortcut-card text-decoration-none">
                                 <i class="fas fa-user-check d-block fa-2x text-danger mb-2"></i>
                                 <span class="fw-bold small d-block">Check-in</span>
                             </a>
                         </div>
                         <div class="col-6">
-                            <button class="btn btn-white w-100 py-4 border-0 shadow-sm shortcut-card">
+                            <a href="{{ route('cashier.checkin.active_tables') }}"
+                                class="btn btn-white w-100 py-4 border-0 shadow-sm shortcut-card text-decoration-none">
                                 <i class="fas fa-table d-block fa-2x text-danger mb-2"></i>
-                                <span class="fw-bold small d-block">Peta Meja</span>
-                            </button>
+                                <span class="fw-bold small d-block">Meja Aktif</span>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('cashier.payments.confirmation') }}"
+                                class="btn btn-white w-100 py-4 border-0 shadow-sm shortcut-card text-decoration-none">
+                                <i class="fas fa-receipt d-block fa-2x text-danger mb-2"></i>
+                                <span class="fw-bold small d-block">Konfirmasi</span>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('cashier.report.index') }}"
+                                class="btn btn-white w-100 py-4 border-0 shadow-sm shortcut-card text-decoration-none">
+                                <i class="fas fa-file-invoice-dollar d-block fa-2x text-danger mb-2"></i>
+                                <span class="fw-bold small d-block">Report</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -221,7 +259,6 @@
             background: white;
             border-radius: 20px;
             transition: all 0.3s ease;
-            text-decoration: none;
             color: #333;
         }
 

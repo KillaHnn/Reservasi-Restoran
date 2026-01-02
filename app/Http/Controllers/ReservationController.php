@@ -7,6 +7,7 @@ use App\Models\Table;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ReservationController extends Controller
 {
@@ -17,7 +18,7 @@ class ReservationController extends Controller
         $end = $request->input('end_time', '20:00');
 
         $bookedTableIds = Reservation::where('reservation_date', $date)
-            ->whereIn('status', ['pending', 'confirmed'])
+            ->whereIn('status', ['pending', 'confirmed', 'seated'])
             ->where(function ($q) use ($start, $end) {
                 $q->where('start_time', '<', $end)
                     ->where('end_time', '>', $start);
@@ -27,7 +28,7 @@ class ReservationController extends Controller
 
         $tables = Table::all();
 
-        return view('customer.reservations.index', compact('tables', 'bookedTableIds'));
+        return view('customer.reservations.index', compact('tables', 'bookedTableIds', 'date', 'start', 'end'));
     }
 
 
@@ -88,17 +89,36 @@ class ReservationController extends Controller
         }
     }
 
-    
-    public function history()
+    public function cancel($id)
     {
-        $reservations = Reservation::with('table')
-            ->where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $reservation = Reservation::findOrFail($id);
 
-        return view('history.index', compact('reservations'));
+        if ($reservation->user_id !== Auth::id()) {
+            return back()->with('error', 'Anda tidak memiliki akses untuk aksi ini.');
+        }
+
+        if (in_array(strtolower($reservation->status), ['confirmed', 'completed', 'cancelled'])) {
+            return back()->with('error', 'Reservasi ini sudah tidak dapat dibatalkan.');
+        }
+
+        try {
+            DB::transaction(function () use ($reservation) {
+
+                $reservation->update([
+                    'status' => 'cancelled'
+                ]);
+
+                $reservation->table->update([
+                    'status' => 'active'
+                ]);
+            });
+
+            return back()->with('success', 'Reservasi berhasil dibatalkan.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat membatalkan reservasi.');
+        }
     }
-
+    
     public function review(Request $request, $id = null)
     {
         if ($id) {

@@ -13,7 +13,6 @@ class CashierController extends Controller
         date_default_timezone_set('Asia/Jakarta');
         $today = date('Y-m-d');
 
-        // Menampilkan tamu yang SUDAH BAYAR tapi statusnya masih PENDING (belum masuk)
         $reservations = Reservation::with(['user', 'table', 'payment'])
             ->whereDate('reservation_date', $today)
             ->where('status', 'pending')
@@ -30,7 +29,6 @@ class CashierController extends Controller
         date_default_timezone_set('Asia/Jakarta');
         $today = date('Y-m-d');
 
-        // Menampilkan tamu yang SUDAH MASUK (status confirmed/seated) dan mejanya occupied
         $reservations = Reservation::with(['user', 'table', 'payment'])
             ->whereDate('reservation_date', $today)
             ->where('status', 'confirmed')

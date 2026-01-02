@@ -112,40 +112,6 @@ body, html {
     border-color: var(--secondary-color);
     transform: translateY(-2px);
 }
-
-/* --- Separators --- */
-.social-login-separator, .reg-separator {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: var(--text-color-secondary);
-}
-.social-login-separator { margin-top: 10px; }
-.reg-separator { margin: 15px 0; font-size: 0.85rem; }
-
-.social-login-separator::before, .social-login-separator::after,
-.reg-separator::before, .reg-separator::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid var(--border-color-light);
-}
-.social-login-separator:not(:empty)::before { margin-right: .25em; }
-.social-login-separator:not(:empty)::after { margin-left: .25em; }
-.reg-separator:not(:empty)::before { margin-right: .5em; }
-.reg-separator:not(:empty)::after { margin-left: .5em; }
-
-/* --- Social Buttons --- */
-.social-buttons .btn { padding: 10px; font-weight: 500; white-space: nowrap; }
-.btn-google, .btn-facebook {
-    background-color: var(--background-white);
-    color: var(--text-color-secondary);
-    border: 1px solid var(--border-color-light);
-}
-.btn-google { margin-right: 10px; }
-.btn-facebook { margin-left: 10px; }
-.btn-google .fab.fa-google { color: #DB4437; }
-.btn-facebook .fab.fa-facebook-f { color: #1877F2; }
-
 /* --- Hero Section --- */
 .hero-section {
     position: relative;
@@ -385,7 +351,6 @@ body, html {
     margin-bottom: 0;
 
 }
-
 
 
 .info-icon {
