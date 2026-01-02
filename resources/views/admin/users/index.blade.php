@@ -6,21 +6,41 @@
 @section('content')
     @if (session('success'))
         <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: "{{ session('success') }}",
-                timer: 3000,
-                showConfirmButton: false
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    timer: 3000,
+                    showConfirmButton: false,
+                    timerProgressBar: true
+                });
             });
         </script>
     @endif
+
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    html: '{!! implode('<br>', $errors->all()) !!}',
+                    confirmButtonColor: '#A31B31',
+                });
+            });
+        </script>
+    @endif
+
     <div class="row">
         <div class="col-12">
-            <div class="card card-custom p-4 border-0 shadow-sm">
+            <div class="card card-custom p-4 border-0 shadow-sm" style="border-radius: 20px;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold" style="color: var(--primary)">All Registered Users</h5>
-                    <button class="btn btn-resto px-4">
+                    <div>
+                        <h5 class="fw-bold mb-0" style="color: #A31B31">User Management</h5>
+                        <p class="text-muted small mb-0">Kelola data admin, kasir, dan pelanggan Anda.</p>
+                    </div>
+                    <button class="btn btn-resto px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAddUser">
                         <i class="fas fa-user-plus me-2"></i> Add New User
                     </button>
                 </div>
@@ -59,87 +79,49 @@
                                     </td>
                                     <td>
                                         @if ($user->role == 'admin')
-                                            <span
-                                                class="badge bg-danger-subtle text-danger px-3 py-2 text-uppercase">Admin</span>
+                                            <span class="badge bg-danger-subtle text-danger px-3 py-2 text-uppercase"
+                                                style="font-size: 10px;">Admin</span>
                                         @elseif($user->role == 'cashier')
-                                            <span
-                                                class="badge bg-warning-subtle text-warning px-3 py-2 text-uppercase">Cashier</span>
+                                            <span class="badge bg-warning-subtle text-warning px-3 py-2 text-uppercase"
+                                                style="font-size: 10px;">Cashier</span>
                                         @else
-                                            <span
-                                                class="badge bg-info-subtle text-info px-3 py-2 text-uppercase">Customer</span>
+                                            <span class="badge bg-info-subtle text-info px-3 py-2 text-uppercase"
+                                                style="font-size: 10px;">Customer</span>
                                         @endif
                                     </td>
                                     <td class="small text-muted">{{ $user->created_at->format('d M Y') }}</td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-warning me-1" title="Edit User"
-                                            onclick="editUser('{{ $user->id }}', '{{ addslashes($user->name) }}', '{{ $user->email }}', '{{ $user->phone_number }}', '{{ $user->role }}')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-
-                                        @if (Auth::id() !== $user->id)
-                                            <button class="btn btn-sm btn-outline-danger" title="Delete User"
-                                                onclick="confirmDeleteUser('{{ $user->id }}')">
-                                                <i class="fas fa-trash-alt"></i>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-warning rounded-3 me-2"
+                                                onclick="editUser('{{ $user->id }}', '{{ addslashes($user->name) }}', '{{ $user->email }}', '{{ $user->phone_number }}', '{{ $user->role }}')">
+                                                <i class="fas fa-edit"></i>
                                             </button>
-                                        @endif
+
+                                            @if (Auth::id() !== $user->id)
+                                                <button class="btn btn-sm btn-outline-danger rounded-3"
+                                                    onclick="confirmDeleteUser('{{ $user->id }}')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <form id="globalDeleteForm" method="POST" style="display:none;">
-                        @csrf
-                        @method('DELETE')
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Modal Edit User --}}
-    <div class="modal fade" id="modalEditUser" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 20px; border: none;">
-                <div class="modal-header border-0 pt-4 px-4">
-                    <h5 class="fw-bold" style="color: var(--primary)">Edit User Information</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="formEditUser" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body px-4">
-                        <div class="mb-3">
-                            <label class="small fw-bold mb-2">FULL NAME</label>
-                            <input type="text" name="name" id="edit_name" class="form-control bg-light border-0 p-3"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="small fw-bold mb-2">EMAIL ADDRESS</label>
-                            <input type="email" name="email" id="edit_email" class="form-control bg-light border-0 p-3"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="small fw-bold mb-2">PHONE NUMBER</label>
-                            <input type="text" name="phone_number" id="edit_phone"
-                                class="form-control bg-light border-0 p-3" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="small fw-bold mb-2">ROLE</label>
-                            <select name="role" id="edit_role" class="form-select bg-light border-0 p-3" required>
-                                <option value="customer">Customer</option>
-                                <option value="cashier">Cashier</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0 pb-4 px-4">
-                        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-resto px-4">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <form id="globalDeleteForm" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
+    @include('admin.users.modal.add')
+    @include('admin.users.modal.edit')
+
 @endsection
 
 @push('scripts')
@@ -147,6 +129,7 @@
         $(document).ready(function() {
             $('#tableUsers').DataTable({
                 "pageLength": 10,
+                "responsive": true,
                 "language": {
                     "search": "",
                     "searchPlaceholder": "Search users...",
@@ -158,37 +141,41 @@
                 },
                 "dom": '<"d-flex justify-content-between align-items-center mb-3"f l>rt<"d-flex justify-content-between align-items-center mt-3"i p>'
             });
+
             $('.dataTables_filter input').addClass('form-control border-0 shadow-sm px-3').css('background-color',
                 '#F8F0E3');
         });
 
         function editUser(id, name, email, phone, role) {
-            $('#formEditUser').attr('action', '/admin/users/' + id);
+            const form = $('#formEditUser');
+            form.attr('action', '/admin/users/' + id);
+
             $('#edit_name').val(name);
             $('#edit_email').val(email);
             $('#edit_phone').val(phone);
             $('#edit_role').val(role);
+
             $('#modalEditUser').modal('show');
         }
 
         function confirmDeleteUser(id) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "This user will be permanently deleted!",
+                title: 'Apakah Anda yakin?',
+                text: "Data user akan dihapus secara permanen!",
                 icon: 'warning',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonColor: '#6c757d',
-                confirmButtonColor: '#A31B31',
                 showCancelButton: true,
+                confirmButtonColor: '#A31B31',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    let form = $('#globalDeleteForm');
+                    const form = $('#globalDeleteForm');
                     form.attr('action', '/admin/users/destroy/' + id);
-
                     form.submit();
                 }
-            })
+            });
         }
     </script>
 @endpush

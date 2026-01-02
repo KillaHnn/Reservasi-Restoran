@@ -18,7 +18,7 @@
 
                                 @if ($method == 'qris')
                                     <div class="qris-box p-3 bg-white rounded-4 shadow-sm border d-inline-block mb-3">
-                                        <img src="{{ asset ('image/qr-code.png')}}" class="img-fluid"
+                                        <img src="{{ asset('image/qr-code.png') }}" class="img-fluid"
                                             style="max-height: 220px;" alt="QRIS Code">
                                     </div>
                                     <div class="d-flex justify-content-center gap-2">
@@ -117,22 +117,6 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function copyToClipboard(element) {
-            var text = document.querySelector(element).innerText;
-            navigator.clipboard.writeText(text);
-            Swal.fire({
-                icon: 'success',
-                title: 'Tersalin!',
-                text: text,
-                timer: 1000,
-                showConfirmButton: false
-            });
-        }
-    </script>
-
     <style>
         body {
             background-color: #f4f7f6;
@@ -168,3 +152,18 @@
         }
     </style>
 @endsection
+@push('scripts')
+    <script>
+        function copyToClipboard(element) {
+            var text = document.querySelector(element).innerText;
+            navigator.clipboard.writeText(text);
+            Swal.fire({
+                icon: 'success',
+                title: 'Tersalin!',
+                text: text,
+                timer: 1000,
+                showConfirmButton: false
+            });
+        }
+    </script>
+@endpush

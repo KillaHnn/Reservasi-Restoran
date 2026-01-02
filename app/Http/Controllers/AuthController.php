@@ -74,6 +74,35 @@ class AuthController extends Controller
         return redirect()->route('customer.dashboard')->with('success', 'Registration successful!');
     }
 
+    public function createUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'phone_number' => 'required|string|max:15',
+            'role' => 'required|in:admin,cashier,customer',
+            'password' => 'required|string|min:8|confirmed',
+        ], [
+            'email.unique' => 'Email ini sudah terdaftar, silakan gunakan email lain.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal harus 8 karakter.'
+        ]);
+
+        try {
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'role' => $request->role,
+                'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            ]);
+
+            return redirect()->back()->with('success', 'User ' . $request->name . ' berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Gagal menambahkan user: ' . $e->getMessage()]);
+        }
+    }
+
     public function showLoginForm()
     {
         return view('auth.Login');

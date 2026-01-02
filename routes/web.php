@@ -4,8 +4,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\DasboardController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TableController;
@@ -30,30 +32,46 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin', [DasboardController::class, 'admin'])->name('admin.dashboard');
 
         Route::get('/admin/users', [AuthController::class, 'index'])->name('admin.users.index');
+        Route::post('/create/user/process', [AuthController::class, 'createUser'])->name('create.user.process');
         Route::put('/admin/users/{id}', [AuthController::class, 'update'])->name('admin.users.update');
         Route::delete('/admin/users/destroy/{id}', [AuthController::class, 'destroy'])->name('admin.users.destroy');
 
         Route::get('/admin/tables', [TableController::class, 'index'])->name('admin.tables.index');
-        Route::get('/admin/tables/create', [TableController::class, 'create'])->name('admin.tables.create');
         Route::post('/admin/tables', [TableController::class, 'store'])->name('admin.tables.store');
-        Route::get('/admin/tables/{table}', [TableController::class, 'show'])->name('admin.tables.show');
         Route::get('/admin/tables/{table}/edit', [TableController::class, 'edit'])->name('admin.tables.edit');
         Route::put('/admin/tables/{table}', [TableController::class, 'update'])->name('admin.tables.update');
         Route::delete('/admin/tables/{table}', [TableController::class, 'destroy'])->name('admin.tables.destroy');
+
+        Route::get('/admin/report', [ReportController::class, 'reportAdmin'])->name('admin.report.index');
+        Route::get('/admin/report/export', [ReportController::class, 'exportExcel'])->name('admin.report.export');
+
+        Route::get('/history/admin', [HistoryController::class, 'historyAdmin'])->name('history.admin');
     });
 
     Route::middleware('role:cashier')->group(function () {
         Route::get('/cashier', [DasboardController::class, 'cashier'])->name('cashier.dashboard');
+        Route::get('/history/cashier', [HistoryController::class, 'historyCashier'])->name('history.cashier');
+        Route::get('/cashier/report', [ReportController::class, 'reportCashier'])->name('cashier.report.index');
+        Route::get('/cashier/report/export', [ReportController::class, 'exportExcel'])->name('cashier.report.export');
+    });
 
+    Route::middleware(['role:admin|cashier'])->group(function () {
         Route::get('/cashier/payments/confirmation', [PaymentController::class, 'confirmPayment'])->name('cashier.payments.confirmation');
 
         Route::get('/cashier/checkin', [CashierController::class, 'checkinIndex'])->name('cashier.checkin.index');
         Route::get('/cashier/checkin/active-tables', [CashierController::class, 'activeTablesIndex'])->name('cashier.checkin.active_tables');
         Route::post('/checkin/process/{id}', [CashierController::class, 'checkIn'])->name('checkin.process');
+        Route::post('/checkout/process/{id}', [CashierController::class, 'checkOut'])->name('checkout.process');
 
         Route::get('/cashier/payments/confirmation', [PaymentController::class, 'showConfirmation'])->name('cashier.payments.confirmation');
         Route::post('/cashier/payments/confirm', [PaymentController::class, 'confirmPayment'])->name('cashier.payments.confirm');
@@ -65,17 +83,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
         Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store')->withoutMiddleware(['auth', 'role:customer']);
         Route::get('/reservations/review/{id?}', [ReservationController::class, 'review'])->name('reservations.review');
+        Route::put('/reservations/{id}/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
 
         Route::post('/payment/process', [PaymentController::class, 'paymentProcess'])->name('payment.process');
-
         Route::get('/payment/instructions/{method}/{reservation_id}', [PaymentController::class, 'showInstructions'])->name('payment.instructions');
+        Route::get('/history/customer', [HistoryController::class, 'historyCustomer'])->name('history.index');
     });
-
-    Route::get('/history', [ReservationController::class, 'history'])->name('history.index');
-
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

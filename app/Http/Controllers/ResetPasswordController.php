@@ -14,7 +14,6 @@ class ResetPasswordController extends Controller
         return view('auth.reset-password', ['token' => $token]);
     }
 
-
     public function reset(Request $request)
     {
         $request->validate([
@@ -33,7 +32,6 @@ class ResetPasswordController extends Controller
                 ])->save();
             }
         );
-
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('login')->with('status', __($status))

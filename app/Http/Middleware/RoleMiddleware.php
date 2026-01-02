@@ -9,11 +9,21 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, $role): HttpFoundationResponse
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (Auth::check() && Auth::user()->role === $role) {
-            return $next($request);
+        if (!Auth::check()) {
+            return redirect('login');
         }
-        return redirect('/')->with('error', 'You do not have access to this page.');
+
+        $user = Auth::user();
+
+        foreach ($roles as $role) {
+            $roleArray = explode('|', $role);
+            if (in_array($user->role, $roleArray)) {
+                return $next($request);
+            }
+        }
+
+        abort(403, 'Anda tidak memiliki hak akses.');
     }
 }
